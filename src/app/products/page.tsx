@@ -1,29 +1,55 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import { z } from 'zod'
 
 // type Product = {
 //     name: string,
 //     price:number
 // }
 
+const productSchema = z.object({
+    name: z.string(),
+    price:z.number().positive(),
+})
 
+type Product = z.infer<typeof productSchema>
 
-export default function Products () {
+const getPriceFromProduct = (product:Product)=>product.price
+
+export default function Products() {
+    const [product, setProduct] = useState<Product>()
+    
     useEffect(() => {
         fetch('/api/product')
             .then((res) => res.json())
             // .then((product:Product) => {
-            .then((product) => {
+            .then((product:unknown) => {
                 // console.log(product?.name?.toUpperCase())
                 // if(typeof product.price=== 'number')
                 // console.log(product?.price?.toFixed(2))
                 
                 // use Zod to validate the product
-        })
+                const validatedProduct = productSchema.safeParse(product)
+
+                if (!validatedProduct.success) {
+                    console.log('Validate problems', validatedProduct.error)
+                    return
+                }
+                console.log(validatedProduct.data.name.toUpperCase())
+                console.log(validatedProduct.data.price.toFixed(2))
+                setProduct(validatedProduct.data)
+            })
         
     }, [])
     
   return (
-    <div>Products</div>
+      <div>
+          <h1>Products</h1>
+          <br />
+          <p>Some fake product</p>
+          <p>{product?.name}</p>
+          <p>{product?.price} $</p>
+          
+    </div>
   )
 }
