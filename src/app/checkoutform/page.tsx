@@ -21,7 +21,11 @@ export default function FormWithoutReactHookForm() {
     const onSubmit = async (data: TSignUpSchema) => {
         const response = await fetch('/api/signup', {
             method: "POST",
-            body: JSON.stringify(data),
+            body: JSON.stringify({
+                email: data.email,
+                password: data.password,
+                confirmPassword:23456346346
+            }),
             headers: {
                 "Content-Type": "application/json"
             }
@@ -37,20 +41,22 @@ export default function FormWithoutReactHookForm() {
         if (responseData.errors) {
             const errors = responseData.errors
 
-            switch (errors) {
-                case errors.email:
+            console.log(errors)
+
+            switch (true) {
+                case !!errors.email:
                     setError('email', {
                         type: 'server',
                         message: errors.email
                     })
                     break;
-                case errors.email:
+                case !!errors.password:
                     setError('password', {
                         type: 'server',
                         message: errors.password
                     })
                     break;
-                case errors.email:
+                case !!errors.confirmPassword:
                     setError('confirmPassword', {
                         type: 'server',
                         message: errors.confirmPassword
