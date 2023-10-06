@@ -1,35 +1,70 @@
 "use client";
 
-import { error } from "console";
-import React, { useState } from "react";
-import { useForm, SubmitHandler } from 'react-hook-form'
-import { z } from 'zod'
 
-const inputsSchema = z.object({
-    email: z.string().email(),
-    password: z.string().min(10, "Password must be at least 10 characters"),
-    confirmPassword: z.string(),
-}).refine(data => data.password === data.confirmPassword, {
-    message: "Password must match",
-    path:['confirmPassword']
-})
+import { TSignUpSchema, signUpSchema } from "@/lib/types/type";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from 'react-hook-form'
 
-type Inputs = z.infer<typeof inputsSchema>
+
 
 export default function FormWithoutReactHookForm() {
     const {
         register,
         handleSubmit,
         reset,
-        getValues,
-        formState: { errors, isSubmitting } } = useForm<Inputs>()
+        setError,
+        formState: { errors, isSubmitting } } = useForm<TSignUpSchema>({
+            resolver:zodResolver(signUpSchema)
+        })
     
 
-    const onSubmit:SubmitHandler<Inputs> = async (data) => {
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        alert('su')
-        console.log(data)
-        reset()
+    const onSubmit = async (data: TSignUpSchema) => {
+        const response = await fetch('/api/signup', {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        const responseData = await response.json()
+
+        if (!response.ok) {
+            alert('Submitting form failed')
+            return
+        }
+
+        if (responseData.errors) {
+            const errors = responseData.errors
+
+            switch (errors) {
+                case errors.email:
+                    setError('email', {
+                        type: 'server',
+                        message: errors.email
+                    })
+                    break;
+                case errors.email:
+                    setError('password', {
+                        type: 'server',
+                        message: errors.password
+                    })
+                    break;
+                case errors.email:
+                    setError('confirmPassword', {
+                        type: 'server',
+                        message: errors.confirmPassword
+                    })
+                    break;
+                
+                default:
+                    alert('Something went wrong')
+                    break;
+            }
+
+        }
+
+        // reset()
     }
 
     return (
