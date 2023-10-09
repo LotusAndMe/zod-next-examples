@@ -14,10 +14,13 @@ type TcartSchema = z.infer<typeof cartSchema>
 
 function Cart() {
 
-    const [cart,setCart]=useState<TcartSchema>([])
+    const [cart, setCart] = useState<TcartSchema>([])
+    const [errorsMsg,setErrorsMsg]=useState('')
 
     function getData() {
-           try {
+        try {
+            setErrorsMsg('')
+            setCart([])
         // const cart: unknown = JSON.parse(localStorage.getItem('cart') || '[]')
         const data: unknown = JSON.parse(localStorage.getItem('cart') || '')
     
@@ -34,7 +37,8 @@ function Cart() {
         console.log('Get data copied from cookies succesfull')
  
     } catch (error: any) {
-        console.log(error.message)
+               console.log(error.message)
+               setErrorsMsg(error.message)
     }
 }
     function saveData() {
@@ -48,12 +52,13 @@ function Cart() {
                 quantity:40
             }
         ]
+        setCart([])
            try {
                localStorage.setItem('cart', JSON.stringify(data))
                console.log('Success save')
      
     } catch (error: any) {
-        console.log(error.message)
+               console.log(error.message)  
     }
     }
     
@@ -81,7 +86,7 @@ function Cart() {
        <div className="flex min-h-screen flex-col items-center justify-between p-24">
 
             <div  className="flex flex-col gap-y-2">
-   
+   <h1>After get bad data from local storage it will be removed automatically</h1>
                 <button
                   type="button"
                   onClick={()=>getData()}
@@ -98,8 +103,20 @@ function Cart() {
                     className="bg-blue-500 disabled:bg-gray-500 py-2 rounded"
                 >Save bad data</button>
           </div>
-          <div  className="flex flex-col gap-y-2">
-   
+          <div className="flex flex-col gap-y-2">
+              {errorsMsg != '' &&<p className='text-red-500'>{errorsMsg}</p>}
+              
+              
+              {cart.map(cartItem => (
+                  <div>
+                      <div>
+                          <p>ID: { cartItem.id}</p>
+                      </div>
+                      <div>
+                          <p>Quantity: { cartItem.quantity}</p>
+                      </div>
+            </div>
+        ))}
                 
           </div>
 
