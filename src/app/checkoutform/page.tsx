@@ -24,7 +24,7 @@ export default function FormWithoutReactHookForm() {
             body: JSON.stringify({
                 email: data.email,
                 password: data.password,
-                confirmPassword:23456346346
+                confirmPassword:data.confirmPassword
             }),
             headers: {
                 "Content-Type": "application/json"
