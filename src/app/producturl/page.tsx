@@ -22,7 +22,7 @@ export default function Product() {
 
     console.log(validatedSearchParams.data.id.toFixed())
 
-    return <div className="flex min-h-screen flex-col items-center justify-between p-24">
+    return <div className="flex flex-col items-center justify-between p-24">
         <h1>Product</h1>
 
         <h2>id must be number, colors: green,red,blue</h2>
