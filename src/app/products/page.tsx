@@ -1,18 +1,13 @@
 'use client'
+import { Product, productSchema } from '@/lib/schema/productschema'
 import React, { useEffect, useState } from 'react'
-import { z } from 'zod'
+
 
 // type Product = {
 //     name: string,
 //     price:number
 // }
 
-const productSchema = z.object({
-    name: z.string(),
-    price:z.number().positive(),
-})
-
-type Product = z.infer<typeof productSchema>
 
 const getPriceFromProduct = (product:Product)=>product.price
 
@@ -22,6 +17,7 @@ export default function Products() {
     useEffect(() => {
         fetch('/api/product')
             .then((res) => res.json())
+            .then(res=>res.data)
             // .then((product:Product) => {
             .then((product:unknown) => {
                 // console.log(product?.name?.toUpperCase())
@@ -43,7 +39,7 @@ export default function Products() {
     }, [])
     
   return (
-       <div className="flex min-h-screen flex-col items-center justify-between p-24">
+       <div className="flex flex-col items-center justify-between p-24">
           <h1>Products</h1>
           <br />
           <p>Some fake product</p>
