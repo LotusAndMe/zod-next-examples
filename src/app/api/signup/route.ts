@@ -20,3 +20,10 @@ export async function POST(request: Request) {
     )
 
 }
+
+// one more example of response
+
+// if(!parsedFrom.success){
+//  return NextResponse.json(parsedForm.error, {
+//     status:422,
+// })
