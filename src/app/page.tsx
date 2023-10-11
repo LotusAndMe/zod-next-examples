@@ -8,6 +8,7 @@ export default function Home() {
       <Link href='/checkoutform'>Form example with api</Link>
       <Link href='/cart'>Cart local storage example</Link>
       <Link href='/producturl?id=1&color=green'>Url search params example</Link>
+      <Link href='/productserver?id=1&color=green'>SSR product page example</Link>
     </main>
   )
 }
